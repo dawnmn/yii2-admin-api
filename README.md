@@ -4,7 +4,10 @@
 表结构参见：`console/controllers/InitController.php`里的SQL_TABLE_SCHEMA
 
 #### 初始化
-执行`php console/yii init/run`
+```
+composer install
+php console/yii init/run
+```
 
 #### 接口地址
 https://identity.getpostman.com/handover/multifactor?user=3858621&handover_token=9916a2a0-4bfa-4712-8025-9011686e7c8e
