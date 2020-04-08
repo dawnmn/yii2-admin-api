@@ -62,7 +62,7 @@ class AuthRoleController extends Controller
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             (new AuthService())->updRole($model);
-            (new AuthService())->updRoleItem($model->name, $model->items);
+            (new AuthService())->updRoleItem($model->name_new, $model->items);
             $transaction->commit();
         } catch (\Exception $exception) {
             $transaction->rollBack();

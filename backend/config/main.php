@@ -54,20 +54,22 @@ return [
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
+            'itemTable'=>'{{%auth_item}}',
+            'itemChildTable'=>'{{%auth_item_child}}',
+            'assignmentTable'=>'{{%auth_assignment}}',
+            'ruleTable'=>'{{%auth_rule}}',
             // uncomment if you want to cache RBAC items hierarchy
             // 'cache' => 'cache',
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-
         'formatter'=>[
             'defaultTimeZone'=>'Asia/Shanghai',
             'dateFormat'=>'php:Y-m-d',

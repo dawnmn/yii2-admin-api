@@ -161,7 +161,10 @@ class AuthService
 
         // 格式化权限
         foreach ($authItemAll as $key=>$value){
+            $value['auth_item_name'] = $value['name'];
+            $value['name'] = $value['description'];
             $value['allow'] = isset($authItem[$key]) ? 1 : 0;
+            unset($value['description']);
             if($value['menu_id']){
                 $authItemMenuYes[] = $value;
             }else{
@@ -198,7 +201,7 @@ class AuthService
             ]
         ];
 
-        return $menuTree;
+        return array_values($menuTree);;
     }
 
     /**
