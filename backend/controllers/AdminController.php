@@ -25,9 +25,10 @@ class AdminController extends Controller
         try{
             $role = new \stdClass();
             $role->name = $model->role_name;
-            $model->add();
+            $data = $model->add();
             Yii::$app->authManager->assign($role, $model->id);
             $transaction->commit();
+            return $data;
         }catch (\Throwable $exception){
             $transaction->rollBack();
             throw $exception;
@@ -123,6 +124,6 @@ class AdminController extends Controller
         if(is_string($error = Helper::validateRequest($model,'reset_password'))){
             return Helper::response(400, $error);
         }
-        $model->resetPassword();
+        return $model->resetPassword();
     }
 }

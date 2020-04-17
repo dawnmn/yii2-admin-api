@@ -15,7 +15,7 @@ class AuthService
 
     public function addItem($model){
         $authManager = Yii::$app->authManager;
-        $transaction = Yii::$app->db->beginTransaction();
+        $trans = Yii::$app->db->beginTransaction();
         try {
             // 使用yii2的方式添加权限条目
             $authItem = $authManager->createPermission($model->name);
@@ -27,16 +27,16 @@ class AuthService
             $authItem->menu_id = $model->menu_id;
             $authItem->save(false);
 
-            $transaction->commit();
+            $trans->commit();
         } catch (\Exception $exception) {
-            $transaction->rollBack();
+            $trans->rollBack();
             throw $exception;
         }
     }
 
     public function updItem($model){
         $authManager = Yii::$app->authManager;
-        $transaction = Yii::$app->db->beginTransaction();
+        $trans = Yii::$app->db->beginTransaction();
         try {
             // 使用yii2的方式修改权限条目
             $authItem = $authManager->getPermission($model->name);
@@ -49,9 +49,9 @@ class AuthService
             $authItem->menu_id = $model->menu_id;
             $authItem->save(false);
 
-            $transaction->commit();
+            $trans->commit();
         } catch (\Exception $exception) {
-            $transaction->rollBack();
+            $trans->rollBack();
             throw $exception;
         }
     }
@@ -127,15 +127,20 @@ class AuthService
      * 获取账号的所有菜单
      */
     public static function getMenuList($adminId=0){
-        $adminId = $adminId ?: Admin::getCurrentId();
+        $adminId = $adminId ?$adminId: Admin::getCurrentId();
         $authManager = Yii::$app->authManager;
 
         $menuIdList = [];
         if(self::SUPER_ADMIN != self::getRole($adminId)){
             $authList = $authManager->getPermissionsByUser($adminId);
+            $itemNameList = [];
             foreach ($authList as $item){
-                $item['menu_id'] && $menuIdList[] = $item['menu_id'];
+                $itemNameList[] = $item->name;
             }
+            $menuIdList = AuthItem::find()->select('menu_id')
+                ->where(['in', 'name', $itemNameList])
+                ->andWhere("menu_id is not null")
+                ->column();
         }
         $menuIdList = array_unique($menuIdList);
 
@@ -154,6 +159,7 @@ class AuthService
      */
     public static function getAuthTree($roleName){
         $menuTree = AuthMenu::tree();
+
         $authItemAll = ArrayHelper::index(AuthItem::simpleListItem(), 'name');
         $authItem = ArrayHelper::index(self::getRoleItems($roleName), 'name');
         $authItemMenuYes = [];
@@ -161,10 +167,10 @@ class AuthService
 
         // 格式化权限
         foreach ($authItemAll as $key=>$value){
-            $value['auth_item_name'] = $value['name'];
-            $value['name'] = $value['description'];
             $value['allow'] = isset($authItem[$key]) ? 1 : 0;
-            unset($value['description']);
+            $temp = $value['name'];
+            $value['name'] = $value['description'];
+            $value['description'] = $temp;
             if($value['menu_id']){
                 $authItemMenuYes[] = $value;
             }else{
@@ -182,7 +188,7 @@ class AuthService
                 foreach ($authItemMenuYes as $authItem){
                     if($authItem['menu_id'] == $menuChild['id']){
                         unset($authItem['menu_id']);
-                        $menuChild['auth_item'][] = $authItem;
+                        $menuChild['children'][] = $authItem;
                     }
                 }
                 unset($menuChild['route']);
@@ -196,12 +202,12 @@ class AuthService
             'children'=>[
                 [
                     'name'=>'其它',
-                    'auth_item'=>$authItemMenuNo
+                    'children'=>$authItemMenuNo
                 ]
             ]
         ];
 
-        return array_values($menuTree);;
+        return array_values($menuTree);
     }
 
     /**

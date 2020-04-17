@@ -5,6 +5,7 @@ namespace console\controllers;
 
 
 use backend\models\Admin;
+use backend\models\AdminAuth;
 use backend\models\AuthItem;
 use backend\models\AuthMenu;
 use backend\service\AuthService;
@@ -29,7 +30,6 @@ create table `admin`  (
   `phone` char(11) comment '手机号码',
   `email` varchar(255) comment '电子邮箱',
   `password` varchar(255)  not null comment '密码',
-  `password_default` varchar(32) comment '默认密码',
   `status` tinyint(4) null default 1 comment '1可用 0禁用',
   `create_time` timestamp(0) null default null comment '创建时间',
   `update_time` timestamp(0) null default null comment '修改时间',
@@ -125,7 +125,7 @@ set foreign_key_checks=1;
             (new Admin([
                 'id'=>1,
                 'username'=>'admin',
-                'password'=>'$2y$13$lL72Ol6uHb.uAgvkG8v9QuCX83D75tECReieIwR1Z5t16mn2Hg/Vu',
+                'password'=>\Yii::$app->security->generatePasswordHash(AdminAuth::DEFAULT_PASSWORD),
                 'status'=>1,
                 'create_time'=>$datetime,
                 'update_time'=>$datetime
@@ -144,23 +144,17 @@ set foreign_key_checks=1;
                 'description'=>'拥有所有权限',
             ]));
 
-            $authService->addItem(new AuthItem([
-                'name'=>'admin/logout',
-                'description'=>'拥有所有权限',
-                'menu_id'=>1
-            ]));
-
             $role = new \stdClass();
             $role->name = AuthService::SUPER_ADMIN;
             \Yii::$app->authManager->assign($role, 1);
 
-            echo "SUCCESS\n";
+            echo "初始化mysql数据成功\n";
             $transaction->commit();
         }catch (\Throwable $e){
             $transaction->rollBack();
             $message = 'mysql数据初始化失败：'. $e->getFile() . ':' . $e->getLine() . ' - ' . $e->getMessage();
             \Yii::error($message);
-            echo $message;
+            echo $message."\n";
         }
     }
 }

@@ -100,14 +100,18 @@ class Admin extends AdminAuth
         $datetime = date('Y-m-d H:i:s');
         $this->create_time = $datetime;
         $this->update_time = $datetime;
-        $this->password_default = \Yii::$app->security->generateRandomString(8);
-        $this->password = \Yii::$app->security->generatePasswordHash($this->password_default);
+        $passwordDefault = \Yii::$app->security->generateRandomString(8);
+        $this->password = \Yii::$app->security->generatePasswordHash($passwordDefault);
 
         foreach ($this->extraAttributes as $attribute){
             unset($this->$attribute);
         }
 
         $this->save(false);
+
+        return [
+            'password_default'=>$passwordDefault
+        ];
     }
 
     public function upd(){
@@ -139,10 +143,14 @@ class Admin extends AdminAuth
         $datetime = date('Y-m-d H:i:s');
         $this->update_time = $datetime;
 
-        $this->password_default = \Yii::$app->security->generateRandomString(8);
+        $passwordDefault = \Yii::$app->security->generateRandomString(8);
         $this->password = \Yii::$app->security->generatePasswordHash($this->password_default);
 
         $this->oldAttributes = self::findOne(['id'=>$this->id])->getOldAttributes();
         $this->save(false);
+
+        return [
+            'password_default'=>$passwordDefault
+        ];
     }
 }

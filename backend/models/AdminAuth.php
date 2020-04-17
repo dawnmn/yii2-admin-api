@@ -7,6 +7,7 @@ use yii\web\IdentityInterface;
 class AdminAuth extends ModelExt implements IdentityInterface
 {
     const LOGIN_EXPIRE_TIME = 604800; // 登录有效期7天
+    const DEFAULT_PASSWORD = '123456'; // 默认密码
 
     public static function table()
     {
@@ -25,7 +26,6 @@ class AdminAuth extends ModelExt implements IdentityInterface
     {
         return [
             [['username','password'], 'required', 'on' => ['login']],
-            [['username'], 'required', 'on' => ['send_sms']],
             [['username'], 'filterString'],
             ['password', 'filterLogin', 'on' => ['login']]
         ];
@@ -57,7 +57,6 @@ class AdminAuth extends ModelExt implements IdentityInterface
     {
         $scenarios = parent::scenarios();
         $scenarios['login'] = ['username','password'];
-        $scenarios['send_sms'] = ['username'];
         return $scenarios;
     }
 
