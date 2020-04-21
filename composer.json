@@ -20,7 +20,8 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "yiisoft/yii2-redis": "^2.0",
         "phpoffice/phpspreadsheet": "^1.11",
-        "php-curl-class/php-curl-class": "^8.7"
+        "php-curl-class/php-curl-class": "^8.7",
+        "yiisoft/yii2-queue": "^2.3"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
