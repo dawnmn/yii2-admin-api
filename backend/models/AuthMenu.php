@@ -72,8 +72,7 @@ class AuthMenu extends ModelExt
         return self::find()->select('id,name')->where("parent is not null")->asArray()->all();
     }
 
-    public static function tree($ids=''){
-        $where = $ids ? "parent is null or id in($ids)" : "";
+    public static function tree($where){
         $result = self::find()->select(['name','route','icon','parent','id'])
             ->where($where)->asArray()->all();
 

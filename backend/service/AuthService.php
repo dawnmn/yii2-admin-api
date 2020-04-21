@@ -9,6 +9,9 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\rbac\Item;
 
+/**
+ * 权限管理
+ */
 class AuthService
 {
     const SUPER_ADMIN = '超级管理员'; // 超级管理员
@@ -128,24 +131,28 @@ class AuthService
      */
     public static function getMenuList($adminId=0){
         $adminId = $adminId ?$adminId: Admin::getCurrentId();
+        $role = self::getRole($adminId);
         $authManager = Yii::$app->authManager;
 
-        $menuIdList = [];
-        if(self::SUPER_ADMIN != self::getRole($adminId)){
-            $authList = $authManager->getPermissionsByUser($adminId);
+        $where = "1<0";
+        if(self::SUPER_ADMIN == $role){
+            $where = "";
+        }else if($role && $authList = $authManager->getPermissionsByUser($adminId)){
             $itemNameList = [];
             foreach ($authList as $item){
                 $itemNameList[] = $item->name;
             }
-            $menuIdList = AuthItem::find()->select('menu_id')
+            if($menuIdList = AuthItem::find()->select('menu_id')
                 ->where(['in', 'name', $itemNameList])
                 ->andWhere("menu_id is not null")
-                ->column();
+                ->column()){
+                $itemIds = implode(',',array_unique($menuIdList));
+                $where = "parent is null or id in($itemIds)";
+            }
         }
-        $menuIdList = array_unique($menuIdList);
 
         $tree = [];
-        $result = AuthMenu::tree(implode(',',$menuIdList));
+        $result = AuthMenu::tree($where);
         foreach ($result as $node){
             if(isset($node['children'])){
                 $tree[] = $node;
@@ -158,7 +165,7 @@ class AuthService
      * 获取角色的权限树
      */
     public static function getAuthTree($roleName){
-        $menuTree = AuthMenu::tree();
+        $menuTree = AuthMenu::tree('');
 
         $authItemAll = ArrayHelper::index(AuthItem::simpleListItem(), 'name');
         $authItem = ArrayHelper::index(self::getRoleItems($roleName), 'name');

@@ -22,7 +22,7 @@ return [
             ],
         ],
         'response' => [
-            'class' => 'backend\components\Response',
+            'class' => 'common\libs\Response',
             'format' => \yii\web\Response::FORMAT_JSON,
             'on beforeSend' => function ($event) {
                 $response = $event->sender;

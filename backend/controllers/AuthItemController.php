@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use backend\components\Controller;
-use backend\components\Helper;
+use common\libs\Helper;
 use backend\models\AuthItem;
 use backend\models\AuthMenu;
 use backend\service\AuthService;
@@ -61,14 +61,5 @@ class AuthItemController extends Controller
             return Helper::response(400, $error);
         }
         (new AuthService())->delItem($model);
-    }
-
-    /**
-     * API 编辑页面数据
-     */
-    public function actionEditPageData(){
-        return [
-            'menu_list'=>AuthMenu::simpleListChild()
-        ];
     }
 }

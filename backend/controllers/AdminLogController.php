@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use backend\components\Controller;
-use backend\components\Helper;
+use common\libs\Helper;
 use backend\models\AdminLog;
 
 class AdminLogController extends Controller

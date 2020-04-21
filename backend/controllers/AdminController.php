@@ -3,9 +3,9 @@
 namespace backend\controllers;
 
 use backend\components\Controller;
-use backend\components\Helper;
 use backend\models\Admin;
 use backend\service\AuthService;
+use common\libs\Helper;
 use Yii;
 use yii\web\HttpException;
 

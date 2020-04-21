@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use backend\components\Controller;
-use backend\components\Helper;
+use common\libs\Helper;
 use backend\models\AuthItem;
 use backend\service\AuthService;
 use yii\rbac\Item;

@@ -14,6 +14,8 @@ use yii\console\Controller;
 class InitController extends Controller
 {
     const SQL_TABLE_SCHEMA = "
+set foreign_key_checks=0;
+    
 drop table if exists `admin`;
 drop table if exists `admin_log`;
 drop table if exists `auth_menu`;
@@ -21,8 +23,6 @@ drop table if exists `auth_assignment`;
 drop table if exists `auth_item_child`;
 drop table if exists `auth_item`;
 drop table if exists `auth_rule`;
-
-set foreign_key_checks=0;
 
 create table `admin`  (
   `id` int(10) UNSIGNED not null auto_increment comment '管理员id',
@@ -133,7 +133,14 @@ set foreign_key_checks=1;
 
             (new AuthMenu([
                 'id'=>1,
+                'name'=>'系统配置',
+                'route'=>'/'
+            ]))->save(false);
+
+            (new AuthMenu([
+                'id'=>2,
                 'name'=>'权限管理',
+                'parent'=>1,
                 'route'=>'/'
             ]))->save(false);
 

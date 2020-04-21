@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\components;
+namespace common\libs;
 
 class Response extends \yii\web\Response
 {
