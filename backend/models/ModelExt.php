@@ -4,10 +4,6 @@ namespace backend\models;
 
 class ModelExt extends \yii\db\ActiveRecord
 {
-    // 分页
-    public $page = 1;
-    public $page_size = 20;
-
     protected $extraAttributes = []; // 表外字段
 
     public static function table()
@@ -17,7 +13,7 @@ class ModelExt extends \yii\db\ActiveRecord
 
     public function attributes()
     {
-        return array_merge(parent::attributes(), $this->extraAttributes);
+        return array_merge(parent::attributes(), ['page', 'page_size'], $this->extraAttributes);
     }
 
     /**

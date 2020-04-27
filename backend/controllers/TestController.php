@@ -12,8 +12,7 @@ use yii\web\Controller;
 class TestController extends Controller
 {
     public function actionIndex(){
-        $date = date('Y-m-d');
-        echo date('Y-m-d', strtotime('+7 day', strtotime($date))).' 00:00:00';
+        
     }
 
     /**

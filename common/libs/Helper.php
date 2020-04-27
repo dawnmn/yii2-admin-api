@@ -3,6 +3,7 @@
 
 namespace common\libs;
 
+use Curl\Curl;
 use yii\data\Pagination;
 
 class Helper
@@ -44,6 +45,13 @@ class Helper
      */
     public static function classBasename($object){
         return basename(str_replace('\\', '/', get_class($object)));
+    }
+
+    /**
+     * 响应
+     */
+    public static function response($code, $message){
+        return \Yii::$app->response->setInfo($code, $message);
     }
 
     /**
@@ -179,5 +187,51 @@ class Helper
 
         $years = [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32];
         return (array_search(date('y'), $years) + 1) . $userId . substr(time(), -9) . substr(microtime(), 2, 5);
+    }
+
+    /**
+     * 获取客户端IP地址 $type 0 返回IP地址 1 返回IPV4地址数字 $adv 处理代理情况
+     */
+    public static function getClientIp($type = 0, $adv = false)
+    {
+        $type = $type ? 1 : 0;
+        static $ip = NULL;
+        if ($ip !== NULL) return $ip[$type];
+        if ($adv) {
+            if (isset($_SERVER['HTTP_X_ORIGINAL_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_ORIGINAL_FORWARDED_FOR'])) {
+                $ip = trim($_SERVER['HTTP_X_ORIGINAL_FORWARDED_FOR']);
+            } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+                $pos = array_search('unknown', $arr);
+                if (false !== $pos) unset($arr[$pos]);
+                $ip = trim($arr[0]);
+            } else if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } else if (isset($_SERVER['REMOTE_ADDR'])) {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        // IP地址合法验证
+        $long = sprintf("%u", ip2long($ip));
+        $ip = $long ? array($ip, $long) : array('0.0.0.0', 0);
+        return $ip[$type];
+    }
+
+    /**
+     * curl post 请求
+     */
+    public static function post($url, $data, $options = []){
+        $curl = new Curl();
+        $curl->setDefaultDecoder($assoc = true);
+        $curl->setTimeout($options['timeout'] ?? 30);
+        $curl->setOpt(CURLOPT_HTTPHEADER, $options['headers'] ?? ['Content-Type: application/json;charset=utf-8']);
+        $curl->setOpt(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+        $curl->setOpt(CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        $data = $data ?: [];
+        $result = $curl->post($url, $data);
+
+        return $result;
     }
 }

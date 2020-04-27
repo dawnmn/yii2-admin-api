@@ -17,6 +17,7 @@ class ChartService
     ];
     const X_TYPE_MONTH = 'month';
     const X_TYPE_DAY = 'day';
+    const X_TYPE_HOUR = 'hour';
 
     protected $xType;
     protected $timeFrom;
@@ -35,11 +36,14 @@ class ChartService
     protected function buildData(){
         $this->data['x_axis'] = Helper::getDays($this->timeFrom, $this->timeTo);
         switch ($this->xType){
+            case self::X_TYPE_MONTH:
+                $this->dateFormat = '%Y-%m';
+                break;
             case self::X_TYPE_DAY:
                 $this->dateFormat = '%Y-%m-%d';
                 break;
-            case self::X_TYPE_MONTH:
-                $this->dateFormat = '%Y-%m';
+            case self::X_TYPE_HOUR:
+                $this->dateFormat = '%H';
                 break;
         }
     }
