@@ -1,7 +1,7 @@
 <?php
 
 
-namespace common\libs;
+namespace common\libs\tool;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -94,7 +94,7 @@ class Excel
 
     /**
      * 从文件中读取 建议异步 popen
-    */
+     */
     public function read($file){
         $spreadsheet = IOFactory::createReader("Xlsx")->load($file);
         $sheet = $spreadsheet->getActiveSheet();
@@ -107,7 +107,10 @@ class Excel
         for($i=2;$i<=$row;$i++){
             $item = [];
             for($j=1;$j<=$column;$j++){
-                $item[$j-1] = is_object($value = $sheet->getCellByColumnAndRow($j, $i)->getValue()) ? $value->__toString() : $value;
+                $item[$j-1] = trim(is_object($value = $sheet->getCellByColumnAndRow($j, $i)->getValue()) ? $value->__toString() : $value);
+            }
+            if(!implode('',$item)){
+                continue;
             }
             $data[] = $item;
         }
