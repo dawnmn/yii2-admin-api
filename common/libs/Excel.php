@@ -28,6 +28,7 @@ class Excel
     // 数据格式
     const CELL_TYPE_STRING = 'string';
     const CELL_TYPE_INT = 'integer';
+    const CELL_TYPE_FLOAT = 'float';
 
     protected $writer;
     protected $title;
