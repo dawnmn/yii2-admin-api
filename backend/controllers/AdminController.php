@@ -6,6 +6,7 @@ use backend\components\Controller;
 use backend\models\Admin;
 use backend\service\AuthService;
 use common\libs\Helper;
+use console\job\DownloadJob;
 use Yii;
 use yii\web\HttpException;
 
@@ -73,6 +74,17 @@ class AdminController extends Controller
         $query = $model->items();
         $paginationData = Helper::pagination($model,$query);
         return $paginationData;
+    }
+
+    public function actionExcel(){
+        $model = new Admin();
+        // 输入验证
+        if (is_string($error = Helper::validateRequest($model, 'items'))) {
+            return Helper::response(400, $error);
+        }
+
+        DownloadJob::push($model);
+        return Helper::response(200, '请进入下载页面进行下载');
     }
 
     /**

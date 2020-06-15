@@ -4,7 +4,9 @@
 namespace common\libs;
 
 use Curl\Curl;
+use yii\base\Model;
 use yii\data\Pagination;
+use yii\db\Query;
 
 class Helper
 {
@@ -12,8 +14,10 @@ class Helper
 
     /**
      * 转成驼峰命名
+     * @param string $underScore
+     * @return string
      */
-    public static function toCamelCase($underScore)
+    public static function toCamelCase(string $underScore)
     {
         $underScore = self::UNDERSCORE_SEPARATOR. str_replace(self::UNDERSCORE_SEPARATOR, " ", strtolower($underScore));
         return ltrim(str_replace(" ", "", ucwords($underScore)), self::UNDERSCORE_SEPARATOR );
@@ -21,43 +25,32 @@ class Helper
 
     /**
      * 转成下划线命名
+     * @param string $cameCase
+     * @return string
      */
-    public static function toUnderScore($cameCase)
+    public static function toUnderScore(string $cameCase)
     {
         return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . self::UNDERSCORE_SEPARATOR . "$2", $cameCase));
     }
 
     /**
-     * 数组键名转成下划线命名
+     * API 接口返回函数
+     * @param string $code
+     * @param string $message
+     * @return mixed
      */
-    public static function arrayKeyToCamelCase($array){
-        foreach ($array as $k=>$v){
-            if(($kNew = self::toCamelCase($k)) != $k){
-                $array[$kNew] = $v;
-                unset($array[$k]);
-            }
-        }
-        return $array;
-    }
-
-    /**
-     * 只获取类名
-     */
-    public static function classBasename($object){
-        return basename(str_replace('\\', '/', get_class($object)));
-    }
-
-    /**
-     * 响应
-     */
-    public static function response($code, $message){
+    public static function response(string $code, string $message){
         return \Yii::$app->response->setInfo($code, $message);
     }
 
     /**
-     * 验证请求参数
+     * 验证请求参数，并将参数放入模型中
+     * @param Model $model
+     * @param string $scenario
+     * @param array $requestData
+     * @return bool|string
      */
-    public static function validateRequest($model, $scenario, $requestData = []){
+    public static function validateRequest(Model $model, string $scenario, array $requestData = []){
         $requestData = $requestData ?: \Yii::$app->request->post();
         $model->scenario = $scenario;
         // 处理$requestData为空数组load方法返回false
@@ -80,9 +73,13 @@ class Helper
     }
 
     /**
-     * 分页数据集中处理
+     * 分页数据处理
+     * @param Model $model
+     * @param Query $query
+     * @param callable|null $format
+     * @return array
      */
-    public static function pagination($model, $query, $format = null){
+    public static function pagination(Model $model, Query $query, callable $format = null){
         $pagination = new Pagination([
             'totalCount' => $query->count(),
             'pageSize' => is_numeric($model->page_size) ? $model->page_size : 20, // 在这里验证page_size
@@ -107,6 +104,7 @@ class Helper
 
     /**
      * 返回JSON
+     * @param $data
      */
     public static function responseJson($data){
         ob_end_clean();
@@ -120,63 +118,14 @@ class Helper
      */
     public static function requestJson(){
         ob_end_clean();
-        echo json_encode(\Yii::$app->request->post());die;
-    }
-
-    /**
-     * 把数组的空字段转换成0
-     */
-    public static function arrayEmptyToZero($array){
-        foreach ($array as &$item){
-            $item = $item ?: 0;
-        }
-        return $array;
-    }
-
-    /**
-     * 获取时间段内的月
-     */
-    public static function getMonths($timeFrom, $timeTo){
-        $timeFrom = strtotime($timeFrom);
-        $timeTo = strtotime($timeTo);
-        $months = [];
-        for(; $timeFrom <= $timeTo;  $timeFrom = strtotime('+1 month', $timeFrom)){
-            $months[] = date('Y-m',$timeFrom);
-        }
-        return $months;
-    }
-
-    /**
-     * 获取时间段内的日
-     */
-    public static function getDays($timeFrom, $timeTo){
-        $timeFrom = strtotime($timeFrom);
-        $timeTo = strtotime($timeTo);
-        $days = [];
-        for(; $timeFrom <= $timeTo;  $timeFrom = strtotime('+1 day', $timeFrom)){
-            $days[] = date('Y-m-d',$timeFrom);
-        }
-        return $days;
-    }
-
-    /**
-     * 通过值删除数组元素
-     */
-    public static function arrayUnsetByValue(&$array, $value){
-        if(!is_array($array)){
-            return;
-        }
-
-        $keys = array_keys($array, $value);
-        if(!empty($keys)){
-            foreach ($keys as $key) {
-                unset($array[$key]);
-            }
-        }
+        echo json_encode(\Yii::$app->request->post());
+        exit;
     }
 
     /**
      * 生成订单号
+     * @param int|string $userId
+     * @return string
      */
     public static function orderNo($userId)
     {
@@ -191,8 +140,11 @@ class Helper
 
     /**
      * 获取客户端IP地址 $type 0 返回IP地址 1 返回IPV4地址数字 $adv 处理代理情况
+     * @param int $type
+     * @param bool $adv
+     * @return mixed
      */
-    public static function getClientIp($type = 0, $adv = false)
+    public static function getClientIp(int $type = 0, bool $adv = false)
     {
         $type = $type ? 1 : 0;
         static $ip = NULL;
@@ -237,6 +189,8 @@ class Helper
 
     /**
      * 过滤不可见字符
+     * @param string|string[] $string
+     * @return string|string[]|null
      */
     public static function filterInvisibleString($string){
         $pattern = "/[\x{007f}-\x{009f}]|\x{00ad}|[\x{0483}-\x{0489}]|[\x{0559}-\x{055a}]|\x{058a}|[\x{0591}-\x{05bd}]|\x{05bf}|[\x{05c1}-\x{05c2}]|[\x{05c4}-\x{05c7}]|[\x{0606}-\x{060a}]|[\x{063b}-\x{063f}]|\x{0674}|[\x{06e5}-\x{06e6}]|\x{070f}|[\x{076e}-\x{077f}]|\x{0a51}|\x{0a75}|\x{0b44}|[\x{0b62}-\x{0b63}]|[\x{0c62}-\x{0c63}]|[\x{0ce2}-\x{0ce3}]|[\x{0d62}-\x{0d63}]|\x{135f}|[\x{200b}-\x{200f}]|[\x{2028}-\x{202e}]|\x{2044}|\x{2071}|[\x{f701}-\x{f70e}]|[\x{f710}-\x{f71a}]|\x{fb1e}|[\x{fc5e}-\x{fc62}]|\x{feff}|\x{fffc}/u";

@@ -1,6 +1,7 @@
 <?php
 
 namespace backend\models;
+use common\models\ModelExt;
 
 class AuthMenu extends ModelExt
 {

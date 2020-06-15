@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use yii\rbac\Item;
+use common\models\ModelExt;
 
 class AuthItem extends ModelExt
 {

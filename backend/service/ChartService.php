@@ -2,8 +2,10 @@
 
 namespace backend\service;
 
+use common\libs\DateTimeAux;
 use common\libs\Helper;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * echart数据
@@ -13,7 +15,7 @@ class ChartService
     const TIME_FROM = '2017-08-01 00:00:00';
     const DATA_TEMPLATE = [
         'x_axis'=>[],
-        'y_axis'=>[]
+        'y_axis'=>[] // 这是个二维数组
     ];
     const X_TYPE_MONTH = 'month';
     const X_TYPE_DAY = 'day';
@@ -34,16 +36,18 @@ class ChartService
     }
 
     protected function buildData(){
-        $this->data['x_axis'] = Helper::getDays($this->timeFrom, $this->timeTo);
         switch ($this->xType){
             case self::X_TYPE_MONTH:
                 $this->dateFormat = '%Y-%m';
+                $this->data['x_axis'] = DateTimeAux::getPeriodMonths($this->timeFrom, $this->timeTo);
                 break;
             case self::X_TYPE_DAY:
                 $this->dateFormat = '%Y-%m-%d';
+                $this->data['x_axis'] = DateTimeAux::getPeriodDays($this->timeFrom, $this->timeTo);
                 break;
             case self::X_TYPE_HOUR:
                 $this->dateFormat = '%H';
+                $this->data['x_axis'] = range(0, 23);
                 break;
         }
     }
@@ -71,20 +75,14 @@ where {$this->where}
 group by x
         ";
         $result = Yii::$app->db_core->createCommand($sql)->queryAll();
+        $result = ArrayHelper::index($result, 'x');
 
-        $list = [];
+        $yList = [];
         foreach ($this->data['x_axis'] as $x){
-            $y = '0';
-            foreach ($result as $item){
-                if($x == $item['x']){
-                    $y = $item['y'];
-                    break;
-                }
-            }
-            $list[] = $y;
+            $yList[] = empty($result[$x]) ? 0 : $result[$x]['y'];
         }
 
-        return $list;
+        return $yList;
     }
 
     /**
@@ -98,19 +96,13 @@ where {$this->where}
 group by x
         ";
         $result = Yii::$app->db_core->createCommand($sql)->queryAll();
+        $result = ArrayHelper::index($result, 'x');
 
-        $list = [];
+        $yList = [];
         foreach ($this->data['x_axis'] as $x){
-            $y = '0';
-            foreach ($result as $item){
-                if($x == $item['x']){
-                    $y = $item['y'];
-                    break;
-                }
-            }
-            $list[] = $y;
+            $yList[] = empty($result[$x]) ? 0 : $result[$x]['y'];
         }
 
-        return $list;
+        return $yList;
     }
 }

@@ -2,6 +2,10 @@
 
 namespace backend\models;
 
+
+use common\libs\Helper;
+use common\models\ModelExt;
+
 class AdminLog extends ModelExt
 {
     protected $extraAttributes = [
@@ -58,7 +62,7 @@ class AdminLog extends ModelExt
                 ->select("description")
                 ->where(['name'=>$this->api])
                 ->scalar();
-            $this->ip = \Yii::$app->request->getUserIP();
+            $this->ip = Helper::getClientIp(0,true);
             $this->save(false);
         }
     }

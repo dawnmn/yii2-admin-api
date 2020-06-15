@@ -5,13 +5,13 @@ namespace backend\controllers;
 use backend\models\AuthItem;
 use backend\service\AuthService;
 use common\libs\Helper;
-use yii\helpers\ArrayHelper;
 use yii\rbac\Item;
 use yii\web\Controller;
 
 class TestController extends Controller
 {
     public function actionIndex(){
+        return range(0, 23);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace common\libs\tool;
+namespace common\libs;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -43,8 +43,11 @@ class Excel
 
     /**
      * 初始化写
+     * @param string $title
+     * @param array $header
+     * @return $this
      */
-    public function initWriter($title, $header){
+    public function initWriter(string $title, array $header){
         $this->title = $title;
         $this->header = $header;
         $this->writer = new XLSXWriter();
@@ -53,9 +56,11 @@ class Excel
     }
 
     /**
-     * 装载数据
+     * 写装载数据
+     * @param array $data
+     * @return $this
      */
-    public function addData(&$data){
+    public function addData(array &$data){
         foreach ($data as $item){
             $this->writer->writeSheetRow($this->title,$item);
         }
@@ -77,24 +82,32 @@ class Excel
 
     /**
      * 保存为文件
+     * @return array
+     * @throws \yii\base\Exception
      */
     public function save(){
-        $dir = \Yii::getAlias('@file') . '/excel/' . date("Ymd") . '/';
+        $dir = \Yii::getAlias('@data') . '/excel/' . date("Ymd") . '/';
         if(!file_exists($dir)){
             mkdir($dir, 0777, true);
         }
 
-        $fileName = $this->title.'_'.date('YmdHis').'_'.\Yii::$app->security->generateRandomString(16).'.xlsx';
+        $fileName = $this->title.'_'.date('YmdHis').'_'.\Yii::$app->security->generateRandomString(6).'.xlsx';
         $token = md5($fileName);
+        $relativePath = 'excel/' . date("Ymd") . '/' . $fileName;
         $this->writer->writeToFile($dir.$fileName);
+
         return [
-            'path'=>$dir.$fileName,
+            'path'=>$relativePath,
             'token'=>$token
         ];
     }
 
     /**
      * 从文件中读取 建议异步 popen
+     * @param $file
+     * @return array
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     public function read($file){
         $spreadsheet = IOFactory::createReader("Xlsx")->load($file);
@@ -120,6 +133,7 @@ class Excel
 
     /**
      * 获取标题
+     * @return mixed
      */
     public function getTitle(){
         return $this->title;

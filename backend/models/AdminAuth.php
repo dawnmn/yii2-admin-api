@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\models\ModelExt;
 use yii\web\IdentityInterface;
 
 class AdminAuth extends ModelExt implements IdentityInterface

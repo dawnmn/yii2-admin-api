@@ -2,6 +2,9 @@
 
 namespace backend\models;
 
+use common\libs\Excel;
+use yii\helpers\ArrayHelper;
+
 class Admin extends AdminAuth
 {
     protected $extraAttributes = [
@@ -94,6 +97,50 @@ class Admin extends AdminAuth
             'like','ll.email',$this->keyword
         ])->orderBy('ll.create_time desc');
         return $query;
+    }
+
+    public function excel($isStruct = false)
+    {
+        $title = '管理员列表';
+        $header = [
+            '编号' => Excel::CELL_TYPE_INT,
+            '用户名' => Excel::CELL_TYPE_STRING,
+            '手机号码' => Excel::CELL_TYPE_STRING,
+            '电子邮箱' => Excel::CELL_TYPE_STRING,
+            '状态' => Excel::CELL_TYPE_STRING,
+            '创建时间' => Excel::CELL_TYPE_STRING,
+        ];
+
+        $buildData = function ($list){
+            $data = [];
+            foreach ($list as $item){
+                switch ($item['status']){
+                    case 1:
+                        $item['status'] = '正常';
+                        break;
+                    default:
+                        $item['status'] = '停用';
+                        break;
+                }
+                $data[] = [
+                    $item['id'],
+                    $item['username'],
+                    $item['phone'],
+                    $item['email'],
+                    $item['status'],
+                    $item['create_time'],
+                ];
+            }
+            return $data;
+        };
+
+        return parent::buildExcelWrite(
+            $title,
+            $header,
+            $this->items(),
+            $buildData,
+            $isStruct
+        );
     }
 
     public function add(){
