@@ -23,6 +23,7 @@ drop table if exists `auth_assignment`;
 drop table if exists `auth_item_child`;
 drop table if exists `auth_item`;
 drop table if exists `auth_rule`;
+drop table if exists `download_job`;
 
 create table `admin`  (
   `id` int(10) UNSIGNED not null auto_increment comment '管理员id',
@@ -103,6 +104,18 @@ create table `auth_assignment`
    foreign key (`item_name`) references `auth_item` (`name`) on delete cascade on update cascade,
    key `auth_assignment_user_id_idx` (`user_id`)
 ) engine InnoDB;
+
+create table `download_job` (
+  `id` int(10) unsigned not null auto_increment comment 'id',
+  `admin_id` int(10) unsigned not null comment '管理员id',
+  `token` varchar(64) default null comment 'token',
+  `name` varchar(30) default null comment '任务名称',
+  `path` varchar(255) default null comment '文件路径',
+  `create_time` timestamp null default null comment '创建时间',
+  `begin_time` timestamp null default null comment '开始时间',
+  `end_time` timestamp null default null comment '完成时间',
+  primary key (`id`)
+) engine=InnoDB;
 
 set foreign_key_checks=1;
     ";
