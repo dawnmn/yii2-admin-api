@@ -31,7 +31,7 @@ return [
                     'message' => $response->getMessage(),
                     'data'=>[]
                 ];
-                $response->data && $data['data'] = $response->data;
+                $response->data && ($data['data'] = $response->data ?: []);
 
                 $response->setStatusCode(200);
                 $response->data = $data;
@@ -47,7 +47,6 @@ return [
             'loginUrl'=>null
         ],
         'session' => [
-            // this is the name of the session cookie used for login on the backend
             'name' => 'yii2-admin-backend',
         ],
         'authManager' => [

@@ -49,7 +49,7 @@ class DownloadJobController extends Controller
             header('Content-type:application/vnd.ms-excel;charset=utf-8;');
             header("Content-Disposition:attachment;filename=$filename");
         }else{
-            return $this->response(-1,'参数有误');
+            return Helper::response(400, '参数有误');
         }
     }
 }

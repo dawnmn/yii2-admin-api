@@ -13,7 +13,7 @@ use yii\web\HttpException;
 class AdminController extends Controller
 {
     /**
-     * API 新增
+     * 新增
      */
     public function actionAdd(){
         $model = new Admin();
@@ -37,7 +37,7 @@ class AdminController extends Controller
     }
 
     /**
-     * API 修改
+     * 修改
      */
     public function actionUpd(){
         $model = new Admin();
@@ -61,7 +61,7 @@ class AdminController extends Controller
     }
 
     /**
-     * API 列表
+     * 列表
      */
     public function actionList(){
         $model = new Admin();
@@ -76,6 +76,9 @@ class AdminController extends Controller
         return $paginationData;
     }
 
+    /**
+     * excel 示例
+     */
     public function actionExcel(){
         $model = new Admin();
         // 输入验证
@@ -88,7 +91,7 @@ class AdminController extends Controller
     }
 
     /**
-     * API 修改密码
+     * 修改密码
      */
     public function actionUpdPassword(){
         $model = new Admin();
@@ -100,7 +103,7 @@ class AdminController extends Controller
     }
 
     /**
-     * API 登录
+     * 登录
      */
     public function actionLogin(){
         // 处理已登录
@@ -117,14 +120,14 @@ class AdminController extends Controller
     }
 
     /**
-     * API 登出
+     * 登出
      */
     public function actionLogout(){
         Yii::$app->user->logout();
     }
 
     /**
-     * API 重置密码
+     * 重置密码
      */
     public function actionResetPassword(){
         if(AuthService::SUPER_ADMIN != AuthService::getRole()){

@@ -99,6 +99,9 @@ class Admin extends AdminAuth
         return $query;
     }
 
+    /**
+     * excel 示例
+     */
     public function excel($isStruct = false)
     {
         $title = '管理员列表';

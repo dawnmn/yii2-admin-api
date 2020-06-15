@@ -13,7 +13,7 @@ use yii\web\UploadedFile;
 class GeneralController extends Controller
 {
     /**
-     * API 文件上传
+     * 文件上传
      */
     public function actionFileUpload(){
         // 表单验证
@@ -24,8 +24,9 @@ class GeneralController extends Controller
             // 兼容wangEditor5数据返回格式
             Helper::responseJson([
                 'errno'=>0,
-                'code'=>-1,
+                'code'=>400,
                 'message'=>$error,
+                'data'=>[]
             ]);
         }
 

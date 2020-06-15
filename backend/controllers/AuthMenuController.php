@@ -10,7 +10,7 @@ use backend\service\AuthService;
 class AuthMenuController extends Controller
 {
     /**
-     * API 子菜单集合
+     * 子菜单集合
      */
     public function actionSimpleListChild(){
         return [
@@ -19,7 +19,7 @@ class AuthMenuController extends Controller
     }
 
     /**
-     * API 父菜单集合
+     * 父菜单集合
      */
     public function actionSimpleListParent(){
         return [
@@ -28,7 +28,7 @@ class AuthMenuController extends Controller
     }
 
     /**
-     * API 列表
+     * 列表
      */
     public function actionList(){
         $model = new AuthMenu();
@@ -43,7 +43,7 @@ class AuthMenuController extends Controller
     }
 
     /**
-     * API 详情
+     * 详情
      */
     public function actionItem(){
         $model = new AuthMenu();
@@ -56,7 +56,7 @@ class AuthMenuController extends Controller
     }
 
     /**
-     * API 新增
+     * 新增
      */
     public function actionAdd(){
         $model = new AuthMenu();
@@ -68,7 +68,7 @@ class AuthMenuController extends Controller
     }
 
     /**
-     * API 修改
+     * 修改
      */
     public function actionUpd(){
         $model = new AuthMenu();
@@ -80,7 +80,7 @@ class AuthMenuController extends Controller
     }
 
     /**
-     * API 删除
+     * 删除
      */
     public function actionDel(){
         $model = new AuthMenu();
@@ -92,7 +92,7 @@ class AuthMenuController extends Controller
     }
 
     /**
-     * API 当前登录用户菜单
+     * 当前登录用户菜单
      */
     public function actionCurrent(){
         return [

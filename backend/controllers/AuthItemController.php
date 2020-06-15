@@ -12,7 +12,7 @@ use yii\rbac\Item;
 class AuthItemController extends Controller
 {
     /**
-     * API 列表
+     * 列表
      */
     public function actionList(){
         $model = new AuthItem();
@@ -27,7 +27,7 @@ class AuthItemController extends Controller
     }
 
     /**
-     * API 新增
+     * 新增
      */
     public function actionAdd(){
         $model = new AuthItem();
@@ -40,7 +40,7 @@ class AuthItemController extends Controller
     }
 
     /**
-     * API 修改
+     * 修改
      */
     public function actionUpd(){
         $model = new AuthItem();
@@ -52,7 +52,7 @@ class AuthItemController extends Controller
     }
 
     /**
-     * API 删除
+     * 删除
      */
     public function actionDel(){
         $model = new AuthItem();

@@ -11,7 +11,7 @@ use yii\rbac\Item;
 class AuthRoleController extends Controller
 {
     /**
-     * API 列表
+     * 列表
      */
     public function actionList(){
         $model = new AuthItem();
@@ -26,7 +26,7 @@ class AuthRoleController extends Controller
     }
 
     /**
-     * API 新增
+     * 新增
      */
     public function actionAdd(){
         $model = new AuthItem();
@@ -47,7 +47,7 @@ class AuthRoleController extends Controller
     }
 
     /**
-     * API 修改
+     * 修改
      */
     public function actionUpd(){
         $model = new AuthItem();
@@ -71,7 +71,7 @@ class AuthRoleController extends Controller
     }
 
     /**
-     * API 删除
+     * 删除
      */
     public function actionDel(){
         $model = new AuthItem();
@@ -86,7 +86,7 @@ class AuthRoleController extends Controller
     }
 
     /**
-     * API 角色权限树
+     * 角色权限树
      */
     public function actionAuthTree(){
         $roleName = \Yii::$app->request->post('role_name');
@@ -98,7 +98,7 @@ class AuthRoleController extends Controller
     }
 
     /**
-     * API 角色名称集合
+     * 角色名称集合
      */
     public function actionSimpleList(){
         return [
