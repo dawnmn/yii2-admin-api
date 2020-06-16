@@ -11,7 +11,15 @@ use yii\web\Controller;
 class TestController extends Controller
 {
     public function actionIndex(){
-        return range(0, 23);
+    }
+
+    public function actionTestEmail(){
+        \Yii::$app->mailer->compose()
+            ->setFrom('yourname1@126.com')
+            ->setTo('yourname2@126.com')
+            ->setSubject('邮件测试')
+            ->setHtmlBody('<h1>邮件测试成功</h1>')
+            ->send();
     }
 
     /**

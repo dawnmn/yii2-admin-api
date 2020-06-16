@@ -22,3 +22,4 @@ crontab -e
 ```
 
 #### 接口地址
+https://documenter.getpostman.com/view/3858621/SzfDvjN2?version=latest
