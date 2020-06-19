@@ -8,11 +8,11 @@ yii2后台管理系统api接口，开箱即用，包含如下功能：
 
 表结构参见：`console/controllers/InitController.php`里的SQL_TABLE_SCHEMA
 
-#### 初始化
+#### 初始化步骤
 
-1 修改`common/config/main-local.php` `common/config/download_job_file_root`配置文件
+1. 修改`common/config/main-local.php` `common/config/download_job_file_root`配置文件
 
-2 执行以下命令
+2. 执行以下命令
 ```
 composer install
 php /your_project_path/console/yii init/run
@@ -20,6 +20,18 @@ php /your_project_path/console/yii init/run
 # 需要异步导出excel时启动队列服务
 crontab -e
 * * * * * /usr/bin/php /your_project_path/console/yii queue/run
+```
+
+#### 升级步骤
+1. 备份当前项目.git，common/config/main-local.php到temp_for_dev
+2. 复制yii2-admin-api的.git到项目目录
+```
+git reset --hard xxxxx #（回退一个版本）
+git pull
+```
+3. 删除yii2-admin-api的.git，还原当前项目.git和common/config/main-local.php
+```
+git pull
 ```
 
 #### 接口地址

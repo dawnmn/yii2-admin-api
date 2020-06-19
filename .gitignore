@@ -34,3 +34,5 @@ phpunit.phar
 # vagrant runtime
 /.vagrant
 
+# 开发文件
+/temp_for_dev
