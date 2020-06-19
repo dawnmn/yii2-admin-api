@@ -4,6 +4,7 @@ yii2后台管理系统api接口，开箱即用，包含如下功能：
 - 文件上传
 - 表单异步导出excel（支持大量数据）
 - echart数据
+- 供外部调用的api请求、响应、签名处理
 
 表结构参见：`console/controllers/InitController.php`里的SQL_TABLE_SCHEMA
 

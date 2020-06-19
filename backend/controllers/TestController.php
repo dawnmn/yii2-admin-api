@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\AuthItem;
 use backend\service\AuthService;
+use common\libs\Api;
 use common\libs\Helper;
 use yii\rbac\Item;
 use yii\web\Controller;
@@ -13,6 +14,34 @@ class TestController extends Controller
     public function actionIndex(){
     }
 
+    /**
+     * Api测试
+     */
+    public function actionTestApi(){
+        if($result = (new Api())->get('http://yourdomain.com/test/test-api-echo',[
+            'user_id'=>1003,
+            'password'=>'123abc'
+        ])){
+            return $result;
+        }
+        return Helper::response(510, '请求异常');
+    }
+
+    /**
+     * Api响应测试
+     */
+    public function actionTestApiEcho(){
+        $data = \Yii::$app->request->get();
+        $header = \Yii::$app->request->headers;
+        if(is_string($result = (new Api())->verify($data, $header))){
+            return Helper::response(511, $result, ['a'=>100]);
+        }
+        return $data;
+    }
+
+    /**
+     * 邮件测试
+     */
     public function actionTestEmail(){
         \Yii::$app->mailer->compose()
             ->setFrom('yourname1@126.com')
