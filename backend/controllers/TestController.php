@@ -6,12 +6,26 @@ use backend\models\AuthItem;
 use backend\service\AuthService;
 use common\libs\Api;
 use common\libs\Helper;
+use common\libs\RedisHelper;
+use Curl\Curl;
 use yii\rbac\Item;
 use yii\web\Controller;
+use Yii;
 
 class TestController extends Controller
 {
     public function actionIndex(){
+//        $curl = new Curl();
+//        $curl->setOpt(CURLOPT_PROXY, '193.219.169.234');
+//        $curl->setOpt(CURLOPT_PROXYPORT, 80);
+//        $result = $curl->get('http://81.68.136.242/test/index');
+////        $result = $curl->get('http://81.68.136.242');
+////        $result = $curl->get('http://www.baidu.com');
+//        Helper::responseJson($result);
+
+        $curl = new Curl();
+        $result = $curl->get('https://ip.jiangxianli.com/api/proxy_ips', []);
+        return $result;
     }
 
     /**
