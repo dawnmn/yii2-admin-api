@@ -106,9 +106,12 @@ class AdminController extends Controller
      * 登录
      */
     public function actionLogin(){
+        $data = [
+            'X-CSRF-Token'=>Yii::$app->request->getCsrfToken()
+        ];
         // 处理已登录
         if (!\Yii::$app->user->isGuest) {
-            return [];
+            return $data;
         }
         $model = new Admin();
         // 输入验证
@@ -117,6 +120,7 @@ class AdminController extends Controller
             return Helper::response(400, $error);
         }
         Yii::$app->user->login(Admin::findOne(['username'=>$model->username]), Admin::LOGIN_EXPIRE_TIME);
+        return $data;
     }
 
     /**

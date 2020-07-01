@@ -17,7 +17,7 @@ return [
         'request' => [
             'csrfParam' => '_csrf-backend',
             'cookieValidationKey' => 'rrm_backend_cookie',
-            'enableCsrfValidation' => false,
+            'enableCsrfValidation' => true,
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ],

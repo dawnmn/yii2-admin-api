@@ -34,9 +34,13 @@ class Controller extends \yii\web\Controller
 
     public function beforeAction($action)
     {
+        // API白名单
+        if($isWhiteApi = AuthService::isWhiteApi()){
+            $this->enableCsrfValidation = false;
+        }
         if(parent::beforeAction($action)){
             // API白名单
-            if(AuthService::isWhiteApi()){
+            if($isWhiteApi){
                 return true;
             }
 
