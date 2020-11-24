@@ -4,37 +4,38 @@ namespace backend\controllers;
 
 use backend\models\AuthItem;
 use backend\service\AuthService;
+use common\libs\Aes;
 use common\libs\Api;
 use common\libs\Helper;
-use common\libs\RedisHelper;
-use Curl\Curl;
 use yii\rbac\Item;
 use yii\web\Controller;
-use Yii;
 
 class TestController extends Controller
 {
-    public function actionIndex(){
-//        $curl = new Curl();
-//        $curl->setOpt(CURLOPT_PROXY, '193.219.169.234');
-//        $curl->setOpt(CURLOPT_PROXYPORT, 80);
-//        $result = $curl->get('http://81.68.136.242/test/index');
-////        $result = $curl->get('http://81.68.136.242');
-////        $result = $curl->get('http://www.baidu.com');
-//        Helper::responseJson($result);
+    public $enableCsrfValidation = false;
 
-        $curl = new Curl();
-        $result = $curl->get('https://ip.jiangxianli.com/api/proxy_ips', []);
-        return $result;
+    public function actionIndex(){
+
     }
 
     /**
      * Api测试
      */
     public function actionTestApi(){
-        if($result = (new Api())->get('http://yourdomain.com/test/test-api-echo',[
+        if($result = (new Api(Api::KEY_SECRET_LIST[0]['key'],Api::KEY_SECRET_LIST[0]['secret']))
+            ->get('http://yii2.admin.com/test/test-api-echo',[
             'user_id'=>1003,
-            'password'=>'123abc'
+            'name'=>'123abc',
+                'tags'=>[
+                    'good',
+                    'handsome'
+                ],
+                'history'=>[
+                    'young'=>'hhh',
+                    'old'=>232
+                ],
+//                'file'=>new \CURLFile('/home/wwwroot/yii2_admin/data/image.jpg'),
+//                'file2'=>new \CURLFile('/home/wwwroot/yii2_admin/data/image.jpg'),
         ])){
             return $result;
         }
@@ -47,7 +48,7 @@ class TestController extends Controller
     public function actionTestApiEcho(){
         $data = \Yii::$app->request->get();
         $header = \Yii::$app->request->headers;
-        if(is_string($result = (new Api())->verify($data, $header))){
+        if(is_string($result = (new Api('',''))->verify($data, $header))){
             return Helper::response(511, $result, ['a'=>100]);
         }
         return $data;
@@ -63,6 +64,16 @@ class TestController extends Controller
             ->setSubject('邮件测试')
             ->setHtmlBody('<h1>邮件测试成功</h1>')
             ->send();
+    }
+
+    /**
+     * Aes测试
+     */
+    public function actionAes(){
+        $keyIv = Aes::getKeyIv();
+        $aes = new Aes($keyIv['key'], $keyIv['iv']);
+        echo $token = $aes->encode('13099998888');
+        echo $aes->decode($token);
     }
 
     /**

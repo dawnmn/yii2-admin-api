@@ -110,7 +110,15 @@ class Excel
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     public function read($file){
-        $spreadsheet = IOFactory::createReader("Xlsx")->load($file);
+        try{
+            $readerType = 'Xlsx';
+            $spreadsheet = IOFactory::createReader($readerType)->load($file);
+        }catch (\Exception $exception){
+            // 兼容excel5
+            $readerType = 'Xls';
+            $spreadsheet = IOFactory::createReader($readerType)->load($file);
+        }
+
         $sheet = $spreadsheet->getActiveSheet();
         $location = $sheet->getHighestRowAndColumn();
         $row = $location['row'];

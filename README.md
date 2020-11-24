@@ -33,6 +33,11 @@ git pull
 ```
 git pull
 ```
+4. 缓存处理
+```
+# 清空表结构缓存，表结构发生变化时调用
+php /your_project_path/console/yii cache/flush-schema
+```
 
 #### 接口地址
 https://documenter.getpostman.com/view/3858621/SzfDvjN2?version=latest

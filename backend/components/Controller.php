@@ -4,6 +4,7 @@ namespace backend\components;
 
 use backend\models\Admin;
 use backend\service\AuthService;
+use common\libs\RedisApp;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\HttpException;
@@ -34,6 +35,11 @@ class Controller extends \yii\web\Controller
 
     public function beforeAction($action)
     {
+        // 接口限流
+        if(!RedisApp::requestLimit()){
+            throw new HttpException(406, '请求频繁');
+        }
+
         // API白名单
         if($isWhiteApi = AuthService::isWhiteApi()){
             $this->enableCsrfValidation = false;
@@ -55,6 +61,7 @@ class Controller extends \yii\web\Controller
             if(!Yii::$app->authManager->checkAccess($adminId, $api)){
                 throw new HttpException(405, '权限不足');
             }
+
             return true;
         }
         return false;

@@ -12,33 +12,9 @@ class Helper
 {
     const UNDERSCORE_SEPARATOR = '_';
 
+    // ---------------------- 请求响应 ----------------------
     /**
-     * 转成驼峰命名
-     * @param string $underScore
-     * @return string
-     */
-    public static function toCamelCase(string $underScore)
-    {
-        $underScore = self::UNDERSCORE_SEPARATOR. str_replace(self::UNDERSCORE_SEPARATOR, " ", strtolower($underScore));
-        return ltrim(str_replace(" ", "", ucwords($underScore)), self::UNDERSCORE_SEPARATOR );
-    }
-
-    /**
-     * 转成下划线命名
-     * @param string $cameCase
-     * @return string
-     */
-    public static function toUnderScore(string $cameCase)
-    {
-        return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . self::UNDERSCORE_SEPARATOR . "$2", $cameCase));
-    }
-
-    /**
-     * API 接口返回函数
-     * @param string $code
-     * @param string $message
-     * @param array $data
-     * @return mixed
+     * API接口返回函数
      */
     public static function response(string $code, string $message, array $data=[]){
         return \Yii::$app->response->setInfo($code, $message, $data);
@@ -46,10 +22,6 @@ class Helper
 
     /**
      * 验证请求参数，并将参数放入模型中
-     * @param Model $model
-     * @param string $scenario
-     * @param array $requestData
-     * @return bool|string
      */
     public static function validateRequest(Model $model, string $scenario, array $requestData = []){
         $requestData = $requestData ?: \Yii::$app->request->post();
@@ -75,10 +47,6 @@ class Helper
 
     /**
      * 分页数据处理
-     * @param Model $model
-     * @param Query $query
-     * @param callable|null $format
-     * @return array
      */
     public static function pagination(Model $model, Query $query, callable $format = null){
         $pagination = new Pagination([
@@ -105,7 +73,6 @@ class Helper
 
     /**
      * 返回JSON
-     * @param $data
      */
     public static function responseJson($data){
         ob_end_clean();
@@ -123,10 +90,10 @@ class Helper
         exit;
     }
 
+    // ---------------------- 业务函数 ----------------------
+
     /**
      * 生成订单号
-     * @param int|string $userId
-     * @return string
      */
     public static function orderNo($userId)
     {
@@ -141,9 +108,6 @@ class Helper
 
     /**
      * 获取客户端IP地址 $type 0 返回IP地址 1 返回IPV4地址数字 $adv 处理代理情况
-     * @param int $type
-     * @param bool $adv
-     * @return mixed
      */
     public static function getClientIp(int $type = 0, bool $adv = false)
     {
@@ -174,12 +138,13 @@ class Helper
 
     /**
      * curl post 请求
+     * 传文件：$data = ['file'=>new \CURLFile($filename)];
      */
     public static function post($url, $data, $options = []){
         $curl = new Curl();
         $curl->setDefaultDecoder($assoc = true);
         $curl->setTimeout($options['timeout'] ?? 30);
-        $curl->setOpt(CURLOPT_HTTPHEADER, $options['headers'] ?? ['Content-Type: application/json;charset=utf-8']);
+        $curl->setOpt(CURLOPT_HTTPHEADER, $options['headers']);
         $curl->setOpt(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
         $curl->setOpt(CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         $data = $data ?: [];
@@ -188,21 +153,130 @@ class Helper
         return $result;
     }
 
+    // ---------------------- 字符串函数 ----------------------
+
+    /**
+     * 转成驼峰命名
+     */
+    public static function toCamelCase(string $underScore)
+    {
+        $underScore = self::UNDERSCORE_SEPARATOR. str_replace(self::UNDERSCORE_SEPARATOR, " ", strtolower($underScore));
+        return ltrim(str_replace(" ", "", ucwords($underScore)), self::UNDERSCORE_SEPARATOR );
+    }
+
+    /**
+     * 转成下划线命名
+     */
+    public static function toUnderScore(string $cameCase)
+    {
+        return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . self::UNDERSCORE_SEPARATOR . "$2", $cameCase));
+    }
+
+    /**
+     * 数组键名转成下划线命名 递归
+     */
+    public static function arrayKeyToCamelCase($array){
+        foreach ($array as $k=>$v){
+            if(is_array($v)){
+                $v = self::arrayKeyToCamelCase($v);
+            }
+            if(($kNew = self::toCamelCase($k)) != $k){
+                $array[$kNew] = $v;
+                unset($array[$k]);
+            }
+        }
+        return $array;
+    }
+
+    /**
+     * 只获取类名
+     */
+    public static function classBasename($object){
+        return basename(str_replace('\\', '/', get_class($object)));
+    }
+
     /**
      * 过滤不可见字符
-     * @param string|string[] $string
-     * @return string|string[]|null
      */
     public static function filterInvisibleString($string){
         $pattern = "/[\x{007f}-\x{009f}]|\x{00ad}|[\x{0483}-\x{0489}]|[\x{0559}-\x{055a}]|\x{058a}|[\x{0591}-\x{05bd}]|\x{05bf}|[\x{05c1}-\x{05c2}]|[\x{05c4}-\x{05c7}]|[\x{0606}-\x{060a}]|[\x{063b}-\x{063f}]|\x{0674}|[\x{06e5}-\x{06e6}]|\x{070f}|[\x{076e}-\x{077f}]|\x{0a51}|\x{0a75}|\x{0b44}|[\x{0b62}-\x{0b63}]|[\x{0c62}-\x{0c63}]|[\x{0ce2}-\x{0ce3}]|[\x{0d62}-\x{0d63}]|\x{135f}|[\x{200b}-\x{200f}]|[\x{2028}-\x{202e}]|\x{2044}|\x{2071}|[\x{f701}-\x{f70e}]|[\x{f710}-\x{f71a}]|\x{fb1e}|[\x{fc5e}-\x{fc62}]|\x{feff}|\x{fffc}/u";
         return preg_replace($pattern, "", $string);
     }
 
+    // ---------------------- 时间函数 ----------------------
+
     /**
      * 获取当前时间戳（微秒）
-     * @return int
      */
     public static function currentTimeMillis(){
         return (int)bcmul(microtime(true), 1000, 0);
+    }
+
+    /**
+     * 获取时间段内的日
+     */
+    public static function getPeriodDays(string $timeFrom, string $timeTo){
+        $timeFrom = strtotime($timeFrom);
+        $timeTo = strtotime($timeTo);
+        $days = [];
+        for(; $timeFrom <= $timeTo; $timeFrom = strtotime('+1 day', $timeFrom)){
+            $days[] = date('Y-m-d',$timeFrom);
+        }
+        return $days;
+    }
+
+    /**
+     * 获取时间段内的月
+     */
+    public static function getPeriodMonths(string $timeFrom, string $timeTo){
+        $timeFrom = strtotime(substr($timeFrom, 0, 7));
+        $timeTo = strtotime($timeTo);
+        $months = [];
+        for(; $timeFrom <= $timeTo; $timeFrom = strtotime('+1 month', $timeFrom)){
+            $months[] = date('Y-m',$timeFrom);
+        }
+        return $months;
+    }
+
+    // ---------------------- 数组函数 ----------------------
+
+    /**
+     * 批量bc计算
+     */
+    public static function bcMulti($bc, $list, $scale){
+        $number = 0;
+        foreach ($list as $value){
+            $number = $bc($number, $value, $scale);
+        }
+        return $number;
+    }
+
+    /**
+     * 批量格式化小数位数 递归
+     */
+    public static function numberFormatMulti(&$list, $scale){
+        foreach ($list as &$value){
+            if(is_array($value)){
+                self::numberFormatMulti($value, $scale);
+            }else{
+                if(is_numeric($value) && strpos($value, '.')){
+                    $value = bcadd($value, 0, $scale);
+                }
+            }
+        }
+    }
+
+    /**
+     * 数组相同键值求和 递归
+     */
+    public static function arraySum($list, $listSum){
+        foreach ($list as $k=>$v){
+            if(is_array($v)){
+                $listSum[$k] = self::arraySum($list[$k], $listSum[$k]);
+            }else if(is_numeric($v)){
+                $listSum[$k] = bcadd($listSum[$k], $v, Helper::getFloatLength($listSum[$k]) ?:Helper::getFloatLength($v));
+            }
+        }
+        return $listSum;
     }
 }
