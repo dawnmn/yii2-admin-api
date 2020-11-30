@@ -7,12 +7,13 @@ use Curl\Curl;
 use yii\base\Model;
 use yii\data\Pagination;
 use yii\db\Query;
+use yii;
 
 class Helper
 {
     const UNDERSCORE_SEPARATOR = '_';
 
-    // ---------------------- 请求响应 ----------------------
+    // ---------------------- YII2相关 ----------------------
     /**
      * API接口返回函数
      */
@@ -88,6 +89,15 @@ class Helper
         ob_end_clean();
         echo json_encode(\Yii::$app->request->post());
         exit;
+    }
+
+    /**
+     * 错误日志，用于try ... catch
+     */
+    public static function errorLog(\Throwable $e, string $title){
+        $message = $title . ' ' . $e->getFile() . ':' . $e->getLine() . ' - ' . $e->getMessage();
+        Yii::error($message);
+        return $message."\n";
     }
 
     // ---------------------- 业务函数 ----------------------

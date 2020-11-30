@@ -2,7 +2,6 @@
 
 namespace backend\service;
 
-use common\libs\DateTimeAux;
 use common\libs\Helper;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -39,11 +38,11 @@ class ChartService
         switch ($this->xType){
             case self::X_TYPE_MONTH:
                 $this->dateFormat = '%Y-%m';
-                $this->data['x_axis'] = DateTimeAux::getPeriodMonths($this->timeFrom, $this->timeTo);
+                $this->data['x_axis'] = Helper::getPeriodMonths($this->timeFrom, $this->timeTo);
                 break;
             case self::X_TYPE_DAY:
                 $this->dateFormat = '%Y-%m-%d';
-                $this->data['x_axis'] = DateTimeAux::getPeriodDays($this->timeFrom, $this->timeTo);
+                $this->data['x_axis'] = Helper::getPeriodDays($this->timeFrom, $this->timeTo);
                 break;
             case self::X_TYPE_HOUR:
                 $this->dateFormat = '%H';

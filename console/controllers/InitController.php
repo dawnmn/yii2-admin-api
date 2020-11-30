@@ -9,6 +9,7 @@ use backend\models\AdminAuth;
 use backend\models\AuthItem;
 use backend\models\AuthMenu;
 use backend\service\AuthService;
+use common\libs\Helper;
 use yii\console\Controller;
 
 class InitController extends Controller
@@ -31,9 +32,9 @@ create table `admin`  (
   `phone` char(11) comment '手机号码',
   `email` varchar(255) comment '电子邮箱',
   `password` varchar(255)  not null comment '密码',
-  `status` tinyint(4) null default 1 comment '1可用 0禁用',
-  `create_time` timestamp(0) null default null comment '创建时间',
-  `update_time` timestamp(0) null default null comment '修改时间',
+  `status` tinyint(4) not null default 1 comment '1可用 0禁用',
+  `create_time` timestamp(0) comment '创建时间',
+  `update_time` timestamp(0) comment '修改时间',
   primary key (`id`),
   unique index `username_unique`(`username`),
   unique index `email_unique`(`email`)
@@ -45,7 +46,7 @@ create table `admin_log`  (
   `api` varchar(100)  not null comment '访问的api路径',
   `content` varchar(255)  not null comment '内容',
   `ip` varchar(20)  not null comment 'ip',
-  `create_time` timestamp(0) null default null comment '创建时间',
+  `create_time` timestamp(0) comment '创建时间',
   primary key (`id`)
 ) engine = InnoDB;
 
@@ -108,12 +109,12 @@ create table `auth_assignment`
 create table `download_job` (
   `id` int(10) unsigned not null auto_increment comment 'id',
   `admin_id` int(10) unsigned not null comment '管理员id',
-  `token` varchar(64) default null comment 'token',
-  `name` varchar(30) default null comment '任务名称',
-  `path` varchar(255) default null comment '文件路径',
-  `create_time` timestamp null default null comment '创建时间',
-  `begin_time` timestamp null default null comment '开始时间',
-  `end_time` timestamp null default null comment '完成时间',
+  `token` varchar(64) comment 'token',
+  `name` varchar(30) comment '任务名称',
+  `path` varchar(255) comment '文件路径',
+  `create_time` timestamp comment '创建时间',
+  `begin_time` timestamp comment '开始时间',
+  `end_time` timestamp comment '完成时间',
   primary key (`id`)
 ) engine=InnoDB;
 
@@ -172,9 +173,7 @@ set foreign_key_checks=1;
             $transaction->commit();
         }catch (\Throwable $e){
             $transaction->rollBack();
-            $message = 'mysql数据初始化失败：'. $e->getFile() . ':' . $e->getLine() . ' - ' . $e->getMessage();
-            \Yii::error($message);
-            echo $message."\n";
+            echo Helper::errorLog($e, 'mysql数据初始化失败');
         }
     }
 }

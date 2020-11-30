@@ -36,17 +36,13 @@ class Controller extends \yii\web\Controller
     public function beforeAction($action)
     {
         // 接口限流
-        if(!RedisApp::requestLimit()){
+        if(!RedisApp::apiLimit()){
             throw new HttpException(406, '请求频繁');
         }
 
-        // API白名单
-        if($isWhiteApi = AuthService::isWhiteApi()){
-            $this->enableCsrfValidation = false;
-        }
         if(parent::beforeAction($action)){
             // API白名单
-            if($isWhiteApi){
+            if(AuthService::isWhiteApi()){
                 return true;
             }
 

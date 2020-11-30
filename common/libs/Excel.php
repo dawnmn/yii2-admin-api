@@ -43,9 +43,6 @@ class Excel
 
     /**
      * 初始化写
-     * @param string $title
-     * @param array $header
-     * @return $this
      */
     public function initWriter(string $title, array $header){
         $this->title = $title;
@@ -57,8 +54,6 @@ class Excel
 
     /**
      * 写装载数据
-     * @param array $data
-     * @return $this
      */
     public function addData(array &$data){
         foreach ($data as $item){
@@ -82,8 +77,6 @@ class Excel
 
     /**
      * 保存为文件
-     * @return array
-     * @throws \yii\base\Exception
      */
     public function save(){
         $dir = \Yii::getAlias('@data') . '/excel/' . date("Ymd") . '/';
@@ -104,10 +97,6 @@ class Excel
 
     /**
      * 从文件中读取 建议异步 popen
-     * @param $file
-     * @return array
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     public function read($file){
         try{
@@ -141,7 +130,6 @@ class Excel
 
     /**
      * 获取标题
-     * @return mixed
      */
     public function getTitle(){
         return $this->title;

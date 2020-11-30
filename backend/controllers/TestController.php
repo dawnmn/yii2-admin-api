@@ -7,6 +7,7 @@ use backend\service\AuthService;
 use common\libs\Aes;
 use common\libs\Api;
 use common\libs\Helper;
+use yii\db\Exception;
 use yii\rbac\Item;
 use yii\web\Controller;
 

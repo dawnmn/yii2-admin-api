@@ -40,7 +40,9 @@ class DownloadJob extends BaseObject implements \yii\queue\JobInterface
         ]);
         $download->save(false);
 
-        return \Yii::$app->queue->push(new self([
+        $queue = \Yii::$app->queue;
+        $queue->delay(0);
+        return $queue->push(new self([
             'model'=>$model,
             'modelMethod'=>$method,
             'downloadId'=>$download->id,

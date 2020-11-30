@@ -21,7 +21,8 @@
         "yiisoft/yii2-redis": "^2.0",
         "phpoffice/phpspreadsheet": "^1.11",
         "php-curl-class/php-curl-class": "^8.7",
-        "yiisoft/yii2-queue": "^2.3"
+        "yiisoft/yii2-queue": "^2.3",
+        "phpgangsta/googleauthenticator": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

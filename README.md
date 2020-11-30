@@ -1,16 +1,19 @@
 #### 说明
 yii2后台管理系统api接口，开箱即用，包含如下功能：
 - rbac权限全套（菜单、权限、角色、管理员、操作日志）
+- 接口限流、yii2队列
 - 文件上传
 - 表单异步导出excel（支持大量数据）
 - echart数据
 - 供外部调用的api请求、响应、签名处理
+- aes对称加密，可用于加密数据库敏感数据，如手机号
+- 谷歌二次验证
 
 表结构参见：`console/controllers/InitController.php`里的SQL_TABLE_SCHEMA
 
 #### 初始化步骤
 
-1. 修改`common/config/main-local.php` `common/config/download_job_file_root`配置文件
+1. 修改`common/config/main-local.php` `common/config/params-local.php`配置文件
 
 2. 执行以下命令
 ```
