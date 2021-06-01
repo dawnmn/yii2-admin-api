@@ -216,7 +216,7 @@ class Helper
     // ---------------------- 时间函数 ----------------------
 
     /**
-     * 获取当前时间戳（微秒）
+     * 获取当前时间戳（毫秒）
      */
     public static function currentTimeMillis(){
         return (int)bcmul(microtime(true), 1000, 0);
